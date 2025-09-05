@@ -1,0 +1,460 @@
+openapi: 3.0.3
+info:
+  title: Project API
+  version: 1.0.0
+paths:
+  /api/1/project:
+    post:
+      tags:
+        - Project
+      summary: Create a new project
+      description: Creates a new project with incident details and witnesses.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: header
+          required: true
+          schema:
+            type: string
+          description: ID of the user making the request
+          example: "user-12345"
+        - name: correlationId
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Correlation ID for request tracking (optional)
+          example: "abc123-xyz789"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+            example:
+              name: "Slip and Fall Investigation"
+              incidentDate: "2025-09-03"
+              premisesLiability: "Storefront Entrance"
+              caseNo: "CASE-2025-001"
+              witnesses:
+                - "John Doe"
+                - "Jane Smith"
+      responses:
+        '201':
+          description: Project successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectDetailResponse'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                name: "Slip and Fall Investigation"
+                incidentDate: "2025-09-03"
+                premisesLiability: "Storefront Entrance"
+                caseNo: "CASE-2025-001"
+                witnesses:
+                  - "John Doe"
+                  - "Jane Smith"
+                createdDate: "2025-09-03T10:15:30Z"
+                documentsSummary:
+                  total: 10
+                  pending: 3
+                  witnessStatements: 2
+                  expertReports: 1
+                  caseOverview: 1
+                  settlement: 0
+                files:
+                  - fileName: "Witness_Statement_JohnDoe.pdf"
+                    uploadedDate: "2025-09-03T11:30:00Z"
+                    noOfPages: 5
+                    summary: "Summary of witness testimony regarding the incident"
+
+    get:
+      tags:
+        - Project
+      summary: Get project details
+      description: Retrieve a project by ID along with document counts and detailed files.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: projectId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the project to retrieve
+        - name: userId
+          in: header
+          required: true
+          schema:
+            type: string
+          description: ID of the user making the request
+        - name: correlationId
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Correlation ID for request tracking (optional)
+      responses:
+        '200':
+          description: Project details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectDetailResponse'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                name: "Slip and Fall Investigation"
+                incidentDate: "2025-09-03"
+                premisesLiability: "Storefront Entrance"
+                caseNo: "CASE-2025-001"
+                witnesses:
+                  - "John Doe"
+                  - "Jane Smith"
+                createdDate: "2025-09-03T10:15:30Z"
+                documentsSummary:
+                  total: 10
+                  pending: 3
+                  witnessStatements: 2
+                  expertReports: 1
+                  caseOverview: 1
+                  settlement: 0
+                files:
+                  - fileName: "Witness_Statement_JohnDoe.pdf"
+                    uploadedDate: "2025-09-03T11:30:00Z"
+                    noOfPages: 5
+                    summary: "Summary of witness testimony regarding the incident"
+                  - fileName: "Expert_Report_DrSmith.pdf"
+                    uploadedDate: "2025-09-03T12:00:00Z"
+                    noOfPages: 10
+                    summary: "Analysis by expert witness"
+
+  /api/1/project/edit:
+    put:
+      tags:
+        - Project
+      summary: Edit an existing project
+      description: Updates an existing project by ID.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: header
+          required: true
+          schema:
+            type: string
+          description: ID of the user making the request
+          example: "user-12345"
+        - name: correlationId
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Correlation ID for request tracking (optional)
+          example: "abc123-xyz789"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectEditRequest'
+            example:
+              id: "550e8400-e29b-41d4-a716-446655440000"
+              name: "Slip and Fall Investigation - Updated"
+              incidentDate: "2025-09-03"
+              premisesLiability: "Storefront Entrance"
+              caseNo: "CASE-2025-001"
+              witnesses:
+                - "John Doe"
+                - "Jane Smith"
+      responses:
+        '200':
+          description: Project successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectDetailResponse'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                name: "Slip and Fall Investigation - Updated"
+                incidentDate: "2025-09-03"
+                premisesLiability: "Storefront Entrance"
+                caseNo: "CASE-2025-001"
+                witnesses:
+                  - "John Doe"
+                  - "Jane Smith"
+                createdDate: "2025-09-03T10:15:30Z"
+                documentsSummary:
+                  total: 10
+                  pending: 2
+                  witnessStatements: 2
+                  expertReports: 1
+                  caseOverview: 1
+                  settlement: 0
+                files:
+                  - fileName: "Witness_Statement_JohnDoe.pdf"
+                    uploadedDate: "2025-09-03T11:30:00Z"
+                    noOfPages: 5
+                    summary: "Summary of witness testimony regarding the incident"
+                  - fileName: "Expert_Report_DrSmith.pdf"
+                    uploadedDate: "2025-09-03T12:00:00Z"
+                    noOfPages: 10
+                    summary: "Analysis by expert witness"
+
+  /api/1/witness-evidence-analyser:
+    post:
+      tags:
+        - Witness Evidence
+      summary: Start witness evidence analysis
+      description: Initiates witness evidence analysis for a given project.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: projectId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID of the project to analyse
+        - name: userId
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: correlationId
+          in: header
+          required: false
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Analysis started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WitnessEvidenceAnalysisStartResponse'
+              example:
+                projectId: "550e8400-e29b-41d4-a716-446655440000"
+                status: "In Progress"
+                startedAt: "2025-09-03T13:00:00Z"
+
+    get:
+      tags:
+        - Witness Evidence
+      summary: Get HTML witness evidence analysis
+      description: Returns an HTML summary of all witness evidence for the given project.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: projectId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: userId
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: correlationId
+          in: header
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: HTML witness evidence analysis
+          content:
+            text/html:
+              schema:
+                type: string
+                example: |
+                  <html>
+                    <head><title>Witness Evidence Analysis</title></head>
+                    <body>
+                      <h1>Project: Slip and Fall Investigation</h1>
+                      <p>Total Witness Statements: 5</p>
+                      <p>Pending Witness Statements: 2</p>
+                      <h2>Analysed Statements</h2>
+                      <ul>
+                        <li><b>John Doe</b> (Completed): Witness confirmed slipping near entrance, no obstruction.</li>
+                        <li><b>Jane Smith</b> (Pending)</li>
+                      </ul>
+                      <p><b>Summary:</b> Most witnesses confirm incident occurred at the main entrance. 2 statements still pending.</p>
+                    </body>
+                  </html>
+
+  /api/1/witness-evidence-analyser/status:
+    get:
+      tags:
+        - Witness Evidence
+      summary: Check status of witness evidence analysis
+      description: Returns the current status of witness evidence analysis for a project.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: projectId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: userId
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: correlationId
+          in: header
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Status of witness evidence analysis
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WitnessEvidenceAnalysisStatusResponse'
+              example:
+                projectId: "550e8400-e29b-41d4-a716-446655440000"
+                status: "Completed"
+                startedAt: "2025-09-03T13:00:00Z"
+                completedAt: "2025-09-03T13:30:00Z"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ProjectRequest:
+      type: object
+      required:
+        - name
+        - incidentDate
+        - premisesLiability
+        - caseNo
+      properties:
+        name:
+          type: string
+        incidentDate:
+          type: string
+          format: date
+        premisesLiability:
+          type: string
+        caseNo:
+          type: string
+        witnesses:
+          type: array
+          items:
+            type: string
+
+    ProjectEditRequest:
+      allOf:
+        - $ref: '#/components/schemas/ProjectRequest'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: string
+              format: uuid
+
+    ProjectResponse:
+      allOf:
+        - $ref: '#/components/schemas/ProjectRequest'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            createdDate:
+              type: string
+              format: date-time
+
+    FileDetail:
+      type: object
+      required:
+        - fileName
+        - uploadedDate
+        - noOfPages
+        - summary
+      properties:
+        fileName:
+          type: string
+        uploadedDate:
+          type: string
+          format: date-time
+        noOfPages:
+          type: integer
+        summary:
+          type: string
+
+    ProjectDetailResponse:
+      allOf:
+        - $ref: '#/components/schemas/ProjectResponse'
+        - type: object
+          properties:
+            documentsSummary:
+              type: object
+              properties:
+                total:
+                  type: integer
+                pending:
+                  type: integer
+                witnessStatements:
+                  type: integer
+                expertReports:
+                  type: integer
+                caseOverview:
+                  type: integer
+                settlement:
+                  type: integer
+            files:
+              type: array
+              items:
+                $ref: '#/components/schemas/FileDetail'
+
+    WitnessEvidenceAnalysisStartResponse:
+      type: object
+      required:
+        - projectId
+        - status
+        - startedAt
+      properties:
+        projectId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          example: "In Progress"
+        startedAt:
+          type: string
+          format: date-time
+
+    WitnessEvidenceAnalysisStatusResponse:
+      type: object
+      required:
+        - projectId
+        - status
+        - startedAt
+      properties:
+        projectId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          example: "Completed"
+        startedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
