@@ -7,7 +7,7 @@ A serverless FastAPI application deployed on AWS Lambda using Terraform infrastr
 ```
 obiter-mvp/
 ├── backend/
-│   ├── main.py                 # FastAPI application
+│   ├── project.py              # FastAPI application
 │   ├── requirements.txt        # Python dependencies
 │   ├── README.md              # This file
 │   ├── infrastructure/         # Terraform infrastructure code
@@ -62,6 +62,7 @@ obiter-mvp/
 ### **Project Management**
 - **POST** `/api/1/project` - Create a new project
 - **GET** `/api/1/project?projectId={id}` - Retrieve project details
+- **PUT** `/api/1/project/edit` - Edit an existing project
 
 ### **Example Usage**
 
@@ -83,6 +84,21 @@ curl -X POST "https://slbq98s1h4.execute-api.ap-southeast-2.amazonaws.com/dev/ap
 ```bash
 curl -X GET "https://slbq98s1h4.execute-api.ap-southeast-2.amazonaws.com/dev/api/1/project?projectId=your-project-id" \
   -H "userId: user-12345"
+```
+
+**Edit a project:**
+```bash
+curl -X PUT "https://slbq98s1h4.execute-api.ap-southeast-2.amazonaws.com/dev/api/1/project/edit" \
+  -H "Content-Type: application/json" \
+  -H "userId: user-12345" \
+  -d '{
+    "id": "your-project-id",
+    "name": "Updated Project Name",
+    "incidentDate": "2025-09-03",
+    "premisesLiability": "Updated Location",
+    "caseNo": "CASE-2025-001-UPDATED",
+    "witnesses": ["John Doe", "Jane Smith", "New Witness"]
+  }'
 ```
 
 ### Manual Deployment
@@ -140,7 +156,7 @@ The infrastructure includes:
 
 2. **Run locally:**
    ```bash
-   uvicorn main:app --reload
+   uvicorn project:app --reload
    ```
 
 ### Adding Dependencies

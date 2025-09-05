@@ -126,7 +126,7 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
 resource "aws_lambda_function" "api" {
   function_name = "${var.project_name}-api"
   role          = aws_iam_role.lambda_role.arn
-  handler       = "main.handler"
+  handler       = "project.handler"
   runtime       = "python3.12"
   timeout       = 30
   memory_size   = 256
@@ -377,7 +377,7 @@ resource "aws_lambda_layer_version" "python_dependencies" {
 # Create simple Lambda package (just source code)
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_file = "${path.module}/../main.py"
+  source_file = "${path.module}/../project.py"
   output_path = "${path.module}/lambda-source.zip"
 }
 

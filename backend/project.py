@@ -27,6 +27,14 @@ class ProjectRequest(BaseModel):
     caseNo: str
     witnesses: Optional[List[str]] = []
 
+class ProjectEditRequest(BaseModel):
+    id: str
+    name: str
+    incidentDate: str
+    premisesLiability: str
+    caseNo: str
+    witnesses: Optional[List[str]] = []
+
 class FileDetail(BaseModel):
     fileName: str
     uploadedDate: str
@@ -146,5 +154,69 @@ async def get_project(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to retrieve project: {str(e)}")
+
+@app.put("/api/1/project/edit", response_model=ProjectDetailResponse)
+async def edit_project(
+    project: ProjectEditRequest,
+    userId: str = Header(..., description="ID of the user making the request"),
+    correlationId: Optional[str] = Header(None, description="Correlation ID for request tracking")
+):
+    """
+    Edit an existing project by ID.
+    """
+    try:
+        # First, check if the project exists and belongs to the user
+        response = table.get_item(Key={"id": project.id})
+        
+        if "Item" not in response:
+            raise HTTPException(status_code=404, detail="Project not found")
+        
+        existing_project = response["Item"]
+        
+        # Verify the project belongs to the requesting user
+        if existing_project.get("userId") != userId:
+            raise HTTPException(status_code=403, detail="Access denied: Project does not belong to user")
+        
+        # Prepare updated project data
+        updated_project_data = {
+            "id": project.id,
+            "userId": userId,
+            "name": project.name,
+            "incidentDate": project.incidentDate,
+            "premisesLiability": project.premisesLiability,
+            "caseNo": project.caseNo,
+            "witnesses": project.witnesses,
+            "createdDate": existing_project["createdDate"],  # Keep original creation date
+            "documentsSummary": existing_project.get("documentsSummary", {
+                "total": 0,
+                "pending": 0,
+                "witnessStatements": 0,
+                "expertReports": 0,
+                "caseOverview": 0,
+                "settlement": 0
+            }),
+            "files": existing_project.get("files", [])
+        }
+        
+        # Update the project in DynamoDB
+        table.put_item(Item=updated_project_data)
+        
+        # Return the updated project
+        return ProjectDetailResponse(
+            id=project.id,
+            name=project.name,
+            incidentDate=project.incidentDate,
+            premisesLiability=project.premisesLiability,
+            caseNo=project.caseNo,
+            witnesses=project.witnesses,
+            createdDate=existing_project["createdDate"],
+            documentsSummary=DocumentsSummary(**updated_project_data["documentsSummary"]),
+            files=[FileDetail(**file) for file in updated_project_data["files"]]
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update project: {str(e)}")
 
 handler = Mangum(app)

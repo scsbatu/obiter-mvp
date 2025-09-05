@@ -8,7 +8,7 @@ A serverless FastAPI application for legal investigation project management, dep
 obiter-mvp/
 ├── backend/                    # Main application code
 │   ├── README.md              # Detailed documentation
-│   ├── main.py                # FastAPI application
+│   ├── project.py             # FastAPI application
 │   ├── requirements.txt       # Python dependencies
 │   ├── infrastructure/        # Terraform infrastructure
 │   ├── scripts/              # Deployment scripts
