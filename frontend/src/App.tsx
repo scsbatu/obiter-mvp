@@ -13,10 +13,12 @@ import { MainContentLayout } from "./layout/MainContentLayout";
 import { MainRoutes } from "./routes";
 import ProtectRoute from "./protectRoute";
 import { COMMON_PROTECT_ROUTE_PATH } from "./config/constants";
+import { AuthContextProvider } from "./context/AuthContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
+  <AuthContextProvider>
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -47,6 +49,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
+  </AuthContextProvider>
 );
 
 export default App;

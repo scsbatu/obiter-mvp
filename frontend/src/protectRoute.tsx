@@ -1,9 +1,9 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import isEmpty from 'lodash/isEmpty';
-import { getTokenInLocal } from './utils/cacheStorage';
+import { getUserToken } from './utils/cacheStorage';
 
 const ProtectRoute = ({ children, redirectTo, protectRoutes }: any) => {  
-  if (isEmpty(getTokenInLocal()) && protectRoutes) {
+  if (isEmpty(getUserToken()) && protectRoutes) {
     return <Navigate to={redirectTo} />;
   }
   return children;

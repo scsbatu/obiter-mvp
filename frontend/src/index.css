@@ -9,8 +9,11 @@
     --background: 222 20% 6%;
     --foreground: 48 100% 88%;
 
-    --card: 222 18% 8%;
+    --card: 46 65% 52%;
     --card-foreground: 48 100% 88%;
+
+    --card-grey: 220 15% 12%;
+    --card-foreground-grey: 45 100% 90%;
 
     --popover: 222 18% 8%;
     --popover-foreground: 48 100% 88%;
@@ -98,6 +101,22 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  .text-light-gold {
+    color: #F4E5C2 !important
+  }
+
+  .text-white {
+    color: white !important
+  }
+
+  .bg-light-gold {
+    background: rgba(212, 175, 55, 0.1)
+  }
+
+  .bg-light-white {
+    background: rgba(26, 26, 26, 0.6)
+  }
 }
 
 @layer base {
@@ -106,6 +125,6 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-white;
   }
 }

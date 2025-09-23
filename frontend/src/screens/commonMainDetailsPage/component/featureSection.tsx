@@ -6,10 +6,10 @@ const FeaturesSection = () => {
     <section className="py-10 bg-secondary/20">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-3xl font-bold text-foreground mb-6">
+          <h2 className="text-3xl md:text-3xl font-bold text-white mb-6">
             AI That Respects Legal Expertise
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-light-gold max-w-3xl mx-auto leading-relaxed">
             Obliter AI enhances human intelligence rather than replacing it. We
             understand the irreplaceable value of legal expertise and strategic
             thinking that only experienced attorneys can provide.
@@ -26,12 +26,12 @@ const FeaturesSection = () => {
                 <div className="mx-auto mb-4 p-4 bg-primary/10 rounded-full w-fit group-hover:bg-primary/20 transition-colors">
                   <feature.icon className="w-12 h-12 text-primary" />
                 </div>
-                <CardTitle className="text-2xl font-semibold text-foreground mb-4">
+                <CardTitle className="text-2xl font-semibold text-white mb-4">
                   {feature.title}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-light-gold leading-relaxed">
                   {feature.description}
                 </p>
               </CardContent>

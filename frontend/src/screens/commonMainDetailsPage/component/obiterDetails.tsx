@@ -21,7 +21,7 @@ const ObiterDetails = () => {
           <div className="space-y-6 mb-12 text-left max-w-3xl mx-auto">
             <div className="flex items-start space-x-3">
               <div className="w-2 h-2 bg-primary rounded-full mt-3 flex-shrink-0"></div>
-              <p className="text-foreground leading-relaxed">
+              <p className="text-white leading-relaxed">
                 Where centuries of legal precedent meet cutting-edge artificial
                 intelligence to enhance, not replace, the irreplaceable
                 judgement of trained legal professionals.
@@ -29,7 +29,7 @@ const ObiterDetails = () => {
             </div>
             <div className="flex items-start space-x-3">
               <div className="w-2 h-2 bg-primary rounded-full mt-3 flex-shrink-0"></div>
-              <p className="text-foreground leading-relaxed">
+              <p className="text-white leading-relaxed">
                 Organise your cases in secure projects, upload your documents,
                 and leverage AI tools that apply established courtroom
                 methodologies to your materials—eliminating the hallucination
@@ -38,7 +38,7 @@ const ObiterDetails = () => {
             </div>
             <div className="flex items-start space-x-3">
               <div className="w-2 h-2 bg-primary rounded-full mt-3 flex-shrink-0"></div>
-              <p className="text-foreground leading-relaxed">
+              <p className="text-white leading-relaxed">
                 Transform your legal practice with AI that analyses only the
                 documents you provide, ensuring every insight is traceable to
                 your source materials while respecting that nuanced judgement
@@ -64,7 +64,7 @@ const ObiterDetails = () => {
             </div>
             <Card className="bg-gradient-card border-border/50 max-w-2xl mx-auto">
               <CardContent className="p-8">
-                <p className="text-foreground leading-relaxed mb-6">
+                <p className="text-white leading-relaxed mb-6">
                   Create case projects, upload your evidence, and let AI assist
                   your analysis while you maintain complete control. Our tools
                   analyse only the documents you provide, applying
@@ -81,7 +81,7 @@ const ObiterDetails = () => {
               {features.map((feature) => (
                 <div key={feature} className="flex items-center space-x-2">
                   <Check className="w-4 h-4 text-primary" />
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-light-gold">
                     {feature}
                   </span>
                 </div>

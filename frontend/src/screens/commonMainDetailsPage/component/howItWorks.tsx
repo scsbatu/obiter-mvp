@@ -6,10 +6,10 @@ const HowItWorksSection = () => {
     <section className="py-10 bg-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-3xl font-bold text-foreground mb-6">
+          <h2 className="text-3xl md:text-3xl font-bold text-white mb-6">
             How Obliter AI Works
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-xl text-light-gold max-w-3xl mx-auto">
             A simple, yet powerful workflow that transforms the way legal professionals approach complex challenges
           </p>
         </div>
@@ -20,12 +20,12 @@ const HowItWorksSection = () => {
                 <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit group-hover:bg-primary/20 transition-colors">
                   <step.icon className="w-8 h-8 text-primary"/>
                 </div>
-                <CardTitle className="text-xl font-semibold text-foreground">
+                <CardTitle className="text-xl font-semibold text-white">
                   {step.title}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground text-center leading-relaxed">
+                <p className="text-light-gold text-center leading-relaxed">
                   {step.description}
                 </p>
               </CardContent>

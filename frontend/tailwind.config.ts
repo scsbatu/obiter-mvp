@@ -14,7 +14,7 @@ export default {
 			center: true,
 			padding: '2rem',
 			screens: {
-				'2xl': '1400px'
+				'2xl': '2400px'
 			}
 		},
 		extend: {
@@ -51,6 +51,10 @@ export default {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
+				},
+				card_grey: {
+					DEFAULT: 'hsl(var(--card-grey))',
+					foreground: 'hsl(var(--card-foreground-grey))'
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',

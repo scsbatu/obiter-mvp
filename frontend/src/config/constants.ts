@@ -17,6 +17,10 @@ const COMMON_PROTECT_ROUTE_PATH = "/";
 
 const userTypes = ["Lawyer", "Academic", "Student"];
 
+const CLIENT_ID = "853408079388-9ic8luh7u7t30k2pvobu9g8r0h14r4fa.apps.googleusercontent.com"
+
+const API_URL = "https://slbq98s1h4.execute-api.ap-southeast-2.amazonaws.com/dev/api"
+
 const features = [
   "Your Documents Only",
   "No External Research",
@@ -199,7 +203,7 @@ const dashboardCard = [
     title: "Create Projects",
     description: "Create your cases",
     icon: FolderUp,
-    navigationPath: "/projects",
+    navigationPath: "/projects/create-project",
   },
   {
     title: "View Projects",
@@ -227,6 +231,304 @@ const dashboardCard = [
   },
 ];
 
+  const navItems = [
+    { label: "Dashboard", href: "/dashboard" },
+    { label: "Projects", href: "/projects" },
+    { label: "Tools", href: "/analysis" },
+    { label: "About", href: "/about" },
+  ];
+
+  const footerLinks = [
+  {
+    title: "Company",
+    links: [
+      { label: "About Us", href: "#" },
+      { label: "Careers", href: "#" },
+      { label: "Press", href: "#" },
+      { label: "Contact", href: "#" },
+    ],
+  },
+  {
+    title: "Resources",
+    links: [
+      { label: "Documentation", href: "#" },
+      { label: "Case Studies", href: "#" },
+      { label: "Webinars", href: "#" },
+      { label: "Blog", href: "#" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "#" },
+      { label: "Terms of Service", href: "#" },
+      { label: "Security", href: "#" },
+      { label: "Compliance", href: "#" },
+    ],
+  },
+  {
+    title: "Contact",
+    links: [
+      { label: "Support", isLabel: true },
+      { label: "support@obliterai.com", href: "mailto:support@obliterai.com" },
+      { label: "Sales", isLabel: true },
+      { label: "sales@obliterai.com", href: "mailto:sales@obliterai.com" },
+    ],
+  },
+];
+
+const analysisSteps = [
+  {
+    id: 1,
+    title: "Document Processing",
+    description: "Extracting data and cross-referencing witnesses",
+    duration: 2000
+  },
+  {
+    id: 2,
+    title: "Issue Identification",
+    description: "Identifying legal issues, gaps, and inconsistencies",
+    duration: 3000
+  },
+  {
+    id: 3,
+    title: "Contradiction Analysis",
+    description: "Comparing testimonies for inconsistencies",
+    duration: 2500
+  },
+  {
+    id: 4,
+    title: "Credibility Assessment",
+    description: "Assessing witness credibility factors",
+    duration: 3500
+  },
+  {
+    id: 5,
+    title: "Question Generation",
+    description: "Building examination questions using logical methods",
+    duration: 4000
+  }
+];
+
+const witnessResults = [
+  {
+    id: 1,
+    name: "Sarah Michelle Thompson",
+    credibilityScore: 7.2,
+    assessments: {
+      consistency: 4,
+      detailLevel: 3,
+      biasIndicators: 2,
+      corroboration: 4
+    }
+  },
+  {
+    id: 2,
+    name: "Michelle Chen",
+    credibilityScore: 8.5,
+    assessments: {
+      professionalObserver: 5,
+      contemporaneousNotes: 4,
+      neutralWitness: 4,
+      trainingExperience: 5
+    }
+  }
+];
+
+const sampleDocuments = [
+  {
+    title: "01 Overview of Brief.pdf",
+    fileSize: "3.2 MB",
+    uploadDate: "23 Aug 2023",
+    pages: 8,
+    tags: [
+      { label: "Brief", variant: "settlement" as const },
+      { label: "Overview", variant: "default" as const },
+    ],
+  },
+  {
+    title: "02 Statement of Claim.pdf",
+    fileSize: "1.8 MB",
+    uploadDate: "23 Aug 2023",
+    pages: 6,
+    tags: [
+      { label: "Pleading", variant: "plaintiff" as const },
+      { label: "Claim", variant: "default" as const },
+    ],
+  },
+  {
+    title: "03 Defence and Counterclaim.pdf",
+    fileSize: "2.1 MB",
+    uploadDate: "23 Aug 2023",
+    pages: 7,
+    tags: [
+      { label: "Defence", variant: "defendant" as const },
+      { label: "Counterclaim", variant: "defendant" as const },
+    ],
+  },
+  {
+    title: "04 Plaintiff Affidavit.pdf",
+    fileSize: "1.5 MB",
+    uploadDate: "5 August 2024",
+    pages: 4,
+    tags: [
+      { label: "Affidavit", variant: "plaintiff" as const },
+      { label: "Sworn", variant: "default" as const },
+    ],
+  },
+  {
+    title: "05 Report of Michelle Chen.pdf",
+    fileSize: "2.8 MB",
+    uploadDate: "5 March 2024",
+    pages: 12,
+    tags: [
+      { label: "Expert", variant: "expert" as const },
+      { label: "Medical", variant: "medical" as const },
+      { label: "Independent Report", variant: "default" as const },
+    ],
+  },
+  {
+    title: "06 Security Footage Analysis Report.pdf",
+    fileSize: "4.2 MB",
+    uploadDate: "12 February 2024",
+    pages: 15,
+    tags: [
+      { label: "Expert", variant: "expert" as const },
+      { label: "View Analysis", variant: "default" as const },
+      { label: "CCTV", variant: "default" as const },
+    ],
+  },
+  {
+    title: "07 Café Employee Statement.pdf",
+    fileSize: "0.8 MB",
+    uploadDate: "12 August 2024",
+    pages: 3,
+    tags: [
+      { label: "Witness", variant: "defendant" as const },
+      { label: "Employee", variant: "default" as const },
+    ],
+  },
+  {
+    title: "08 Systematic Statement.pdf",
+    fileSize: "1.2 MB",
+    uploadDate: "8 August 2024",
+    pages: 5,
+    tags: [{ label: "Statement", variant: "default" as const }],
+  },
+  {
+    title: "10 Expert Orthopaedic Report.pdf",
+    fileSize: "3.1 MB",
+    uploadDate: "12 September 2024",
+    pages: 18,
+    tags: [
+      { label: "Expert", variant: "expert" as const },
+      { label: "Medical", variant: "medical" as const },
+      { label: "Orthopaedic", variant: "default" as const },
+    ],
+  },
+  {
+    title: "11 Economic Loss Report.pdf",
+    fileSize: "2.4 MB",
+    uploadDate: "30 December 2024",
+    pages: 22,
+    tags: [
+      { label: "Expert", variant: "expert" as const },
+      { label: "Economic", variant: "settlement" as const },
+      { label: "Damages", variant: "default" as const },
+    ],
+  },
+  {
+    title: "12 Expert Injury Evidence.pdf",
+    fileSize: "1.9 MB",
+    uploadDate: "15 October 2024",
+    pages: 8,
+    tags: [
+      { label: "Expert", variant: "expert" as const },
+      { label: "Injury", variant: "medical" as const },
+      { label: "Evidence", variant: "default" as const },
+    ],
+  },
+  {
+    title: "13 Settlement Conference Statement.pdf",
+    fileSize: "1.1 MB",
+    uploadDate: "20 November 2024",
+    pages: 6,
+    tags: [
+      { label: "Settlement", variant: "settlement" as const },
+      { label: "Conference", variant: "default" as const },
+    ],
+  },
+];
+
+const layWitnesses = [
+  {
+    id: 1,
+    name: "Sarah Michelle Thompson",
+    role: "35 year old primary school teacher",
+    description: "Document: Statement of Claim, Personal Analysis",
+    additional: ["Personal statement", "Statement brief"],
+  },
+  {
+    id: 2,
+    name: "Michelle Chen",
+    role: "Security Officer - First Responder",
+    description: "Document: Security incident report dated 15 March 2024",
+    additional: ["Witness statement", "First responder", "Expert report"],
+  },
+  {
+    id: 3,
+    name: "James Michael Wilson",
+    role: "Coffee Corner Cafe Staff Member",
+    description: "Document: Witness Statement dated 16 August 2024",
+    additional: ["Witness statement", "Statement provided", "Used for trial"],
+  },
+  {
+    id: 4,
+    name: "Margaret Rose Davis",
+    role: "Good Samaritan - Assisted Plaintiff",
+    description: "Document: Witness Statement dated 16 August 2024",
+    additional: [
+      "Witness statement",
+      "Statement provided",
+      "Critical evidence",
+    ],
+  },
+];
+
+const expertWitnesses = [
+  {
+    id: 5,
+    name: "Dr Michael Roberts",
+    role: "Treating GP and Medical Expert",
+    description:
+      "Document: Expert Engineering Safety Report dated 24 July 2024",
+    additional: ["Report provided", "Expert report"],
+  },
+  {
+    id: 6,
+    name: "Dr Jennifer Walsh",
+    role: "Forensic Accountant",
+    description: "Document: Medical Report dated 06 Sept 2024",
+    additional: ["Report provided", "Treatment provided", "Report of"],
+  },
+  {
+    id: 7,
+    name: "Susan Mitchell CPA",
+    role: "Forensic Accountant",
+    description: "Document: Economic Loss Report dated 20 Sept 2024",
+    additional: ["Economic loss", "Report provided", "SARCOS loss"],
+  },
+  {
+    id: 8,
+    name: "Dr Andrew Mitchell",
+    role: "Forensic Safety Analysis Expert",
+    description:
+      "Document: Security Footage Analysis Report dated 25 Sept 2024",
+    additional: ["Risk analysis", "Report provided", "Document examination"],
+  },
+];
+
+
 export {
   COMMON_PROTECT_ROUTE_PATH,
   userTypes,
@@ -237,5 +539,14 @@ export {
   projects,
   tools,
   dashboardCard,
-  methodology
+  methodology,
+  navItems,
+  footerLinks,
+  analysisSteps,
+  witnessResults,
+  sampleDocuments,
+  layWitnesses,
+  expertWitnesses,
+  CLIENT_ID,
+  API_URL
 };

@@ -6,10 +6,10 @@ const BeginPractice = () => {
         <div className="text-center">
           <Card className="bg-gradient-card border-primary/30 max-w-4xl mx-auto">
             <CardContent className="p-8">
-              <h3 className="text-2xl font-bold text-foreground mb-4">
+              <h3 className="text-2xl font-bold text-white mb-4">
                 Begin Your Practice Transformation
               </h3>
-              <p className="text-lg text-muted-foreground mb-6">
+              <p className="text-lg text-light-gold mb-6">
                 Join forward-thinking legal professionals already leveraging AI
                 to deliver better outcomes for their clients.
               </p>
