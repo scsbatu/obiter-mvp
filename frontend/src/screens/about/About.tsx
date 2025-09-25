@@ -4,7 +4,7 @@ const About = () => {
   return (
     <div className="min-h-screen container bg-background">
       <main className="mx-auto pt-32">
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-8">
+        <h1 className="text-3xl md:text-3xl font-bold text-white mb-8">
           About Obiter AI
         </h1>
 

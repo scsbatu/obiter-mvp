@@ -1,5 +1,9 @@
 import { useMemo, useState } from "react";
-import { useGetProjectById, usePutProject } from "@/api/project";
+import {
+  useGetProjectById,
+  usePutProject,
+  useUploadFiles,
+} from "@/api/project";
 import { InputDatePicker } from "@/components/InputDatePicker/InputDatePicker";
 import { InputText } from "@/components/InputText/InputText";
 import Loading from "@/components/Loading";
@@ -10,12 +14,21 @@ import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import DocumentUploader from "./component/DocumentUpload";
 
 const EditProject = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+
   const { id } = useParams();
   const { data, isFetching, isLoading } = useGetProjectById(id);
   const [witnesses, setWitnesses] = useState<string[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [date, setDate] = useState<any | null>(new Date());
+
+  const { mutate: uploadDocumentFile, isPending: uploadPending } =
+    useUploadFiles();
+  const { mutate, isPending } = usePutProject();
 
   const handleAdd = (name: string) => {
     setWitnesses((prev) => [...prev, name]);
@@ -40,10 +53,24 @@ const EditProject = () => {
     defaultValues: values,
   });
 
-  const [date, setDate] = useState<any | null>(new Date());
   const handleChange = (d: Date | null) => setDate(d.toISOString());
-  const { mutate, isPending } = usePutProject();
-  const { toast } = useToast();
+
+  const uploadFiles = (projectId: any) => {
+    uploadDocumentFile(
+      { files: uploadedFiles, projectId: projectId },
+      {
+        onSuccess: () => {
+          navigate("/projects");
+        },
+        onError: () => {
+          toast({
+            description: "The project file has not been uploaded",
+            variant: "destructive",
+          });
+        },
+      }
+    );
+  };
 
   const onSubmit = async (data: any) => {
     const projectDetails = {
@@ -55,8 +82,9 @@ const EditProject = () => {
       onSuccess(data, variables, context) {
         toast({
           title: "Update project data successfully",
+          className: "bg-green-600 text-white",
         });
-        navigate("/projects");
+        uploadFiles(data?.id);
       },
     });
   };
@@ -67,10 +95,10 @@ const EditProject = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-6 pt-20 mt-10">
+      <main className="container mx-auto px-6 pt-20 mt-5">
         <div className="mx-auto">
           <div className="mb-10">
-            <h1 className="text-4xl md:text-4xl font-bold text-primary">
+            <h1 className="text-3xl md:text-3xl font-bold text-primary">
               Edit Project
             </h1>
           </div>
@@ -131,13 +159,17 @@ const EditProject = () => {
             onAdd={handleAdd}
             onRemove={handleRemove}
           />
+          <DocumentUploader
+            uploadedFiles={uploadedFiles}
+            setUploadedFiles={setUploadedFiles}
+          />
           <div className="w-full px-2 mt-4 mb-4 flex justify-end">
             <Button
               type="button"
               disabled={!isValid}
               onClick={handleSubmit(onSubmit)}
             >
-              Save Project
+              Update Project
             </Button>
           </div>
         </div>

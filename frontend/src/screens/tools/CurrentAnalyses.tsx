@@ -10,7 +10,7 @@ const CurrentAnalyses = () => {
       <main className="container mx-auto px-6 pt-20 mt-5">
         <div className="mx-auto">
           <div className="mb-10">
-            <h1 className="text-4xl md:text-4xl font-bold text-white mb-4">
+            <h1 className="text-3xl md:text-3xl font-bold text-white mb-4">
               Legal Analysis Tools
             </h1>
           </div>

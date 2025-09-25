@@ -10,7 +10,7 @@ const tools = [
 export const Tools = () => {
   return (
     <div>
-      <h3 className="text-sm font-medium text-foreground mb-3">Tools</h3>
+      <h3 className="text-sm font-medium text-primary mb-3">Tools</h3>
       <div className="space-y-2">
         {tools.map(({ icon: Icon, label }, index) => (
           <div

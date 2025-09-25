@@ -30,51 +30,7 @@ export const AnalysisProgress = ({ onComplete }: AnalysisProgressProps) => {
   }, [currentStep, onComplete]);
 
   return (
-    <div className="container min-h-screen pt-20 bg-background text-foreground">
-      <header className="bg-sidebar-bg border-b border-border px-4 md:px-6 py-4">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
-          <div className="flex flex-col space-y-2">
-            <div className="text-sm text-muted-foreground">
-              Dashboard &gt; Thompson v Metropolitan &gt;{" "}
-              <span className="text-legal-gold">Witness Evidence Analyser</span>
-            </div>
-            <div className="text-xl md:text-2xl font-bold text-primary">
-              Witness Evidence Analyser
-            </div>
-          </div>
-        </div>
-        <div className="mt-4 flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-center lg:space-x-8 gap-4 lg:gap-0 text-sm">
-            <div className="flex items-center space-x-2">
-              <span className="text-muted-foreground">Case:</span>
-              <span className="text-foreground">
-                Thompson v Metropolitan Shopping Centers Pty Ltd
-              </span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-muted-foreground">Court:</span>
-              <span className="text-foreground">County Court of Victoria</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-muted-foreground">Case No:</span>
-              <span className="text-foreground">CC 2024-12847</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-muted-foreground">Type:</span>
-              <span className="text-foreground">Premises Liability</span>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <button className="bg-legal-gold text-gold px-3 py-1.5 md:px-4 md:py-2 rounded text-sm font-medium hover:bg-legal-gold/90">
-              Regenerating Prompts
-            </button>
-            <button className="bg-legal-gold text-gold px-3 py-1.5 md:px-4 md:py-2 rounded text-sm font-medium hover:bg-legal-gold/90">
-              Representing Defendant
-            </button>
-          </div>
-        </div>
-      </header>
-
+    <div>
       <div className="p-4 md:p-6 max-w-4xl mx-auto">
         <div className="mb-8">
           <h2 className="text-2xl font-semibold mb-2 text-legal-gold text-primary">
@@ -155,7 +111,6 @@ export const AnalysisProgress = ({ onComplete }: AnalysisProgressProps) => {
             );
           })}
         </div>
-
         {progress === 100 && (
           <div className="mt-8 text-center">
             <div className="text-legal-gold text-lg font-medium mb-2">

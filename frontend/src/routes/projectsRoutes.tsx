@@ -1,4 +1,5 @@
 import { WitnessAnalyserDashboard } from "@/screens/analysisDashboard/WitnessAnalyserDashboard";
+import { AnalysisResults } from "@/screens/analysisResults/AnalysisResults";
 import CreateProject from "@/screens/createProject/CreateProject";
 import EditProject from "@/screens/editProject/EditProject";
 import { ProjectDetailsView } from "@/screens/projectDetailsView/ProjectDetailsView";
@@ -11,12 +12,12 @@ export const ProjectRoutes = [
     protectRoutes: false,
   },
   {
-    path: "project-view",
+    path: "project-view/:id",
     route: <ProjectDetailsView />,
     protectRoutes: false,
   },
     {
-    path: "project-analyses-view",
+    path: "project-analyses-view/:id",
     route: <WitnessAnalyserDashboard />,
     protectRoutes: false,
   },
@@ -30,6 +31,11 @@ export const ProjectRoutes = [
     route: <EditProject />,
     protectRoutes: false,
   },
+   {
+    path: "project-analyses-result-view/:id",
+    route: <AnalysisResults />,
+    protectRoutes: false,
+  }
 ];
 
 

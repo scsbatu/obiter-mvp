@@ -1,5 +1,4 @@
-import { usePostProject } from "@/api/project";
-import FileUpload from "@/components/FileUpload";
+import { usePostProject, usePutProject, useUploadFiles } from "@/api/project";
 import { InputDatePicker } from "@/components/InputDatePicker/InputDatePicker";
 import { InputText } from "@/components/InputText/InputText";
 import Loading from "@/components/Loading";
@@ -10,9 +9,12 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import DocumentUploader from "./component/DocumentUpload";
+import isEmpty from "lodash/isEmpty";
 
 const CreateProject = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const {
     register,
     handleSubmit,
@@ -20,36 +22,79 @@ const CreateProject = () => {
   } = useForm({
     mode: "all",
   });
-
   const [date, setDate] = useState<any | null>(new Date());
-  const handleChange = (d: Date | null) => setDate(d.toISOString());
-  const { mutate, isError, error, data, isPending } = usePostProject();
   const [witnesses, setWitnesses] = useState<string[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const handleChange = (d: Date | null) => setDate(d.toISOString());
+
+  const { mutate, data: newProject, isPending, reset } = usePostProject();
+  const { mutate: uploadDocumentFile, isPending: uploadPending } =
+    useUploadFiles();
+  const { mutate: updateProject } = usePutProject();
+
+  const isNotAvailableProduct = isEmpty(newProject?.id);
 
   const handleAdd = (name: string) => {
     setWitnesses((prev) => [...prev, name]);
   };
-
   const handleRemove = (index: number) => {
     setWitnesses((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const { toast } = useToast();
+  const uploadFiles = (projectId: any) => {
+    uploadDocumentFile(
+      { files: uploadedFiles, projectId: projectId },
+      {
+        onSuccess: () => {
+          navigate("/projects");
+        },
+        onError: () => {
+          toast({
+            description: "The project file has not been uploaded",
+            variant: "destructive",
+          });
+        },
+      }
+    );
+  };
 
   const onSubmit = async (data: any) => {
     const projectDetails = {
       ...data,
       incidentDate: date,
-      witnesses: witnesses,
+      witnesses,
     };
-    mutate(projectDetails, {
-      onSuccess(data, variables, context) {
-        toast({
-          description: "Project create successfully",
-        });
-        navigate("/projects");
-      },
-    });
+
+    const handleSuccess = (responseData: any, message: string) => {
+      toast({ description: message, className: "bg-green-600 text-white" });
+      uploadFiles(responseData?.id);
+    };
+
+    const handleError = (error: any) => {
+      toast({
+        description: error,
+        variant: "destructive",
+      });
+    };
+
+    if (isNotAvailableProduct) {
+      mutate(projectDetails, {
+        onSuccess: (responseData) =>
+          handleSuccess(responseData, "Project created successfully"),
+        onError(error) {
+          handleError(error);
+        },
+      });
+    } else {
+      projectDetails.id = newProject.id;
+      updateProject(projectDetails, {
+        onSuccess: (responseData) =>
+          handleSuccess(responseData, "Project updated successfully"),
+        onError(error) {
+          handleError(error);
+        },
+      });
+    }
   };
 
   if (isPending) {
@@ -58,11 +103,11 @@ const CreateProject = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-6 pt-20 mt-10">
+      <main className="container mx-auto px-6 pt-20 mt-5">
         <div className="mx-auto">
-          <div className="mb-10">
-            <h1 className="text-4xl md:text-4xl font-bold text-primary">
-              Create Project
+          <div className="mb-7">
+            <h1 className="text-3xl md:text-3xl font-bold text-primary">
+              {isNotAvailableProduct ? "Edit Project" : "Update Project"}
             </h1>
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -122,9 +167,17 @@ const CreateProject = () => {
             onAdd={handleAdd}
             onRemove={handleRemove}
           />
+          <DocumentUploader
+            uploadedFiles={uploadedFiles}
+            setUploadedFiles={setUploadedFiles}
+          />
           <div className="w-full px-2 mt-4 mb-4 flex justify-end">
-            <Button type="button" disabled={!isValid} onClick={handleSubmit(onSubmit)}>
-              Save Project
+            <Button
+              type="button"
+              disabled={!isValid}
+              onClick={handleSubmit(onSubmit)}
+            >
+              {isNotAvailableProduct ? "Save Project" : "Update Product"}
             </Button>
           </div>
         </div>

@@ -1,7 +1,5 @@
 import { useState } from "react";
 import {
-  FileText,
-  ClipboardList,
   Eye,
   Handshake,
   Folder,
@@ -33,10 +31,10 @@ const SidebarItem = ({
     <div className="mb-1">
       <div
         className={cn(
-          "flex items-center justify-between px-3 py-2 text-sm rounded-md cursor-pointer transition-colors",
+          "flex items-center justify-between py-2 text-sm rounded-md cursor-pointer transition-colors",
           isActive
             ? "bg-legal-gold text-background font-medium"
-            : "text-foreground hover:bg-sidebar-item-hover"
+            : "text-white hover:bg-sidebar-item-hover"
         )}
         onClick={() => hasSubmenu && setIsExpanded(!isExpanded)}
       >
@@ -72,70 +70,61 @@ const SidebarItem = ({
   );
 };
 
-export const LegalSidebar = () => {
+export const LegalSidebar = ({ documentData, witnesses }:any) => {
   return (
     <div className="w-64 bg-sidebar-bg border-r border-border h-full p-4">
       <div className="mb-6">
-        <h2 className="text-lg font-semibold text-foreground mb-2">
+        <h2 className="text-lg font-semibold text-primary mb-2">
           Document Categories
         </h2>
       </div>
 
-      <div className="space-y-1">
-        <SidebarItem icon={Folder} label="All Documents" count={43} />
+      <div className="space-y-0">
         <SidebarItem
-          icon={FileText}
+          icon={Folder}
+          label="All Documents"
+          count={documentData?.total || 0}
+        />
+        <SidebarItem
+          icon={Folder}
           label="Pleadings"
-          count={12}
-          hasSubmenu={true}
-        >
-          <SidebarItem icon={FileText} label="Statements of Claim" count={3} />
-          <SidebarItem icon={FileText} label="Defence Documents" count={4} />
-          <SidebarItem icon={FileText} label="Counterclaims" count={2} />
-        </SidebarItem>
+          count={documentData?.pending || 0}
+        />
         <SidebarItem
-          icon={ClipboardList}
+          icon={Folder}
           label="Expert Reports"
-          count={6}
-          hasSubmenu={true}
-        >
-          <SidebarItem icon={ClipboardList} label="Medical Reports" count={3} />
-          <SidebarItem
-            icon={ClipboardList}
-            label="Technical Reports"
-            count={2}
-          />
-          <SidebarItem
-            icon={ClipboardList}
-            label="Financial Reports"
-            count={1}
-          />
-        </SidebarItem>
-        <SidebarItem icon={Eye} label="Case Overview" count={1} />
-        <SidebarItem icon={Handshake} label="Settlements" count={3} />
+          count={documentData?.expertReports || 0}
+        />
+        <SidebarItem
+          icon={Eye}
+          label="Case Overview"
+          count={documentData?.caseOverview || 0}
+        />
+        <SidebarItem
+          icon={Handshake}
+          label="Settlements"
+          count={documentData?.settlement || 0}
+        />
       </div>
       <div className="mt-8 pt-6 border-t border-border">
-        <h3 className="text-sm font-medium text-muted-foreground mb-3">
+        <h3 className="text-sm font-medium text-primary mb-3">
           Identified Witnesses
         </h3>
         <div className="space-y-2">
-          {[
-            "Sean Thompson",
-            "Michelle Chen",
-            "James Wilson",
-            "Margaret Davis",
-            "Dr Jennifer Walsh",
-            "Dr Michael Roberts",
-            "Susan Mitchell CPA",
-            "Dr Andrea Mitchell",
-          ].map((witness, index) => (
-            <div
-              key={index}
-              className="text-sm text-foreground hover:text-legal-gold cursor-pointer transition-colors"
-            >
-              {witness}
+          {witnesses.length > 0 ? (
+            witnesses.map((witness, index) => (
+              <div
+                key={index}
+                className="text-sm text-white hover:text-legal-gold cursor-pointer transition-colors"
+              >
+                {witness}
+              </div>
+            ))
+          ) : (
+            <div className="text-sm text-muted-foreground italic">
+              Witnesses not available
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>

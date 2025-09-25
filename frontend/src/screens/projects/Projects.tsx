@@ -10,17 +10,14 @@ const Projects = () => {
 
   if (isLoading || isFetching) {
     <Loading />;
-  }
-
-  console.log('data',data);
-  
+  }    
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-6 pt-20 mt-10">
+      <main className="container mx-auto px-6 pt-20 mt-5">
         <div className="mx-auto">
           <div className="mb-10">
-            <h1 className="text-4xl md:text-4xl font-bold text-primary">
+            <h1 className="text-3xl md:text-3xl font-bold text-primary">
               Your Projects
             </h1>
           </div>
@@ -31,7 +28,7 @@ const Projects = () => {
                 status={project.status}
                 documents={project.noOfDocuments}
                 analyses={project.noOfAnalyses}
-                onOpen={() => navigate(`/projects/edit-project/${project.projectId}`)}
+                onOpen={() => navigate(`/projects/project-view/${project.projectId}`)}
               />
             ))}
           </div>

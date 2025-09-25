@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { gateAxios } from "./api";
+import { gateAxios, gateAxiosFileUpload } from "./api";
 
 const postProject = async(data:any) =>{
     let res = await gateAxios.post("/1/project",data);
@@ -52,6 +52,24 @@ export const usePutProject = () => {
     onSuccess: (data) => data,
     onError: (error: any) => {
       console.error("Error updating project:", error);
+    },
+  });
+};
+
+export const useUploadFiles = () => {
+  return useMutation({
+    mutationFn: async ({ files, projectId }: { files: File[]; projectId: string }) => {
+      const results = [];
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append("File", file);
+        formData.append("projectId", projectId);
+        formData.append("type", "application/pdf");
+        const res = await gateAxiosFileUpload.post("1/project/upload", formData);
+        results.push(res.data);
+      }
+
+      return results;
     },
   });
 };

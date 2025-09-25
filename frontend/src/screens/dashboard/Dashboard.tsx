@@ -10,10 +10,10 @@ const Dashboard = () => {
       <main className="container mx-auto px-6 pt-20 mt-5 mb-10">
         <div className="max-w-8xl mx-auto">
           <div className="mb-10">
-            <h1 className="text-4xl md:text-4xl font-bold text-white mb-4">
+            <h1 className="text-3xl md:text-3xl font-bold text-primary mb-4">
               Welcome to Obiter AI
             </h1>
-            <p className="text-1xl text-light-gold">
+            <p className="text-1xl text-white">
               Legal Tradition, Enhanced Intelligence
             </p>
           </div>
