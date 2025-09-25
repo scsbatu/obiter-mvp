@@ -107,7 +107,7 @@ const CreateProject = () => {
         <div className="mx-auto">
           <div className="mb-7">
             <h1 className="text-3xl md:text-3xl font-bold text-primary">
-              {isNotAvailableProduct ? "Edit Project" : "Update Project"}
+              {isNotAvailableProduct ? "Create Project" : "Update Project"}
             </h1>
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
