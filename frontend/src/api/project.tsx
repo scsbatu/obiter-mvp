@@ -1,11 +1,10 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { gateAxios, gateAxiosFileUpload } from "./api";
 
-const postProject = async(data:any) =>{
-    let res = await gateAxios.post("/1/project",data);
-    return res.data
-}
-
+const postProject = async (data: any) => {
+  let res = await gateAxios.post("/1/project", data);
+  return res.data;
+};
 
 export const usePostProject = () => {
   return useMutation({
@@ -27,7 +26,7 @@ export const useGetProjectById = (projectId: string | number) => {
       });
       return res.data;
     },
-    enabled: !!projectId, 
+    enabled: !!projectId,
   });
 };
 
@@ -41,14 +40,14 @@ export const useGetAllProject = () => {
   });
 };
 
-const putProject = async(data:any) =>{
-    let res = await gateAxios.put("/1/project",data);
-    return res.data
-}
+const putProject = async (data: any) => {
+  let res = await gateAxios.put("/1/project", data);
+  return res.data;
+};
 
 export const usePutProject = () => {
   return useMutation({
-    mutationFn: putProject, 
+    mutationFn: putProject,
     onSuccess: (data) => data,
     onError: (error: any) => {
       console.error("Error updating project:", error);
@@ -58,17 +57,32 @@ export const usePutProject = () => {
 
 export const useUploadFiles = () => {
   return useMutation({
-    mutationFn: async ({ files, projectId }: { files: File[]; projectId: string }) => {
+    mutationFn: async ({
+      files,
+      projectId,
+    }: {
+      files: File[];
+      projectId: string;
+    }) => {
       const results = [];
       for (const file of files) {
-        const formData = new FormData();
-        formData.append("File", file);
-        formData.append("projectId", projectId);
-        formData.append("type", "application/pdf");
-        const res = await gateAxiosFileUpload.post("1/project/upload", formData);
-        results.push(res.data);
+        if (!file) return;
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = async () => {
+          const base64File = (reader.result as string).split(",")[1];
+          const payload = {
+            projectId: projectId,
+            file: base64File,
+          };
+          try {
+            const res = await gateAxiosFileUpload.post(
+              "1/project/upload",
+              payload
+            );
+          } catch (err: any) {}
+        };
       }
-
       return results;
     },
   });

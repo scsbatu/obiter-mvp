@@ -17,7 +17,7 @@ const gateAxios = axios.create({
 const gateAxiosFileUpload = axios.create({
   baseURL: API_URL,
   headers: {
-    "Content-Type": "multipart/form-data",
+   "Content-Type": "application/json",
   },
   timeout: 10000,
 });
