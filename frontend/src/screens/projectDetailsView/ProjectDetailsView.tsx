@@ -5,7 +5,7 @@ import { CaseSidebar } from "./component/caseSideBar/CaseSidebar";
 import { Scale, Menu, X, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetProjectById } from "@/api/project";
+import { useGetProjectById, useUploadFiles } from "@/api/project";
 import { formatDate } from "@/utils/date";
 import Loading from "@/components/Loading";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +21,10 @@ export const ProjectDetailsView = () => {
   const totalDocument = documentSummery?.total || 0;
   const projectDate = formatDate(data?.incidentDate);
 
-  if (isLoading || isFetching) {
+  const { mutate: uploadDocumentFile, isPending: uploadPending } =
+    useUploadFiles();
+
+  if (isLoading || isFetching || uploadPending) {
     return <Loading />;
   }
 
@@ -140,12 +143,15 @@ export const ProjectDetailsView = () => {
                   <X className="h-5 w-5" />
                 </Button>
               </div>
-              <CaseSidebar projectId={id} />
+              <CaseSidebar
+                projectId={id}
+                uploadDocumentFile={uploadDocumentFile}
+              />
             </div>
           </div>
         )}
         <div className="hidden lg:block">
-          <CaseSidebar projectId={id}/>
+          <CaseSidebar projectId={id} uploadDocumentFile={uploadDocumentFile} />
         </div>
       </div>
     </div>

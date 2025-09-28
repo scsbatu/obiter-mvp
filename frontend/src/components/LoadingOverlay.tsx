@@ -1,23 +1,20 @@
-import { Portal } from '@radix-ui/react-portal';
+import { Portal } from "@radix-ui/react-portal";
+import CommonModal from "./CommonModal";
 
 interface LoadingOverlayProps {
   open: boolean;
 }
 
-const LoadingOverlay = ({ open }:any) => {
+const LoadingOverlay = ({ open }: any) => {
   if (!open) return null;
 
   return (
-    <Portal>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-        <div
-          className="w-16 h-16 border-4 border-t-4 border-gray-200 rounded-full animate-spin"
-          style={{ borderTopColor: '#3e662b' }}
-        >
-
-        </div>
-      </div>
-    </Portal>
+    <CommonModal open={open}>
+      <div
+        className="w-16 h-16 border-4 border-t-4 border-gray-200 rounded-full animate-spin"
+        style={{ borderTopColor: "#3e662b" }}
+      />
+    </CommonModal>
   );
 };
 

@@ -1,154 +1,155 @@
-// import { useState } from "react";
+import { useState, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Upload, Plus, X, File, FileText, Image } from "lucide-react";
 
-// interface FileUploadProps {
-//   multiple?: boolean;
-// }
+export interface Witness {
+  id: string;
+  name: string;
+  role: string;
+  description: string;
+  additional: string[];
+  type: "lay" | "expert";
+}
 
-// export default function FileUpload({ multiple = false }: FileUploadProps) {
-//   const [files, setFiles] = useState<File[]>([]);
+const DocumentUploader = ({ uploadedFiles, setUploadedFiles, uploadFiles }: any) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
 
-//   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     if (!e.target.files) return;
-//     setFiles(multiple ? Array.from(e.target.files) : [e.target.files[0]]);
-//   };
+  const handleFileUpload = (files: FileList | null) => {
+    if (files) {
+      const fileArray = Array.from(files);
+      setUploadedFiles((prev) => [...prev, ...fileArray]);
+    }
+  };
 
-//   return (
-//     <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-6 w-full max-w-md mx-auto">
-//       <label
-//         htmlFor="file-upload"
-//         className="cursor-pointer flex flex-col items-center gap-2"
-//       >
-//         <svg
-//           className="w-12 h-12 text-gray-400"
-//           fill="none"
-//           stroke="currentColor"
-//           strokeWidth={2}
-//           viewBox="0 0 24 24"
-//         >
-//           <path
-//             strokeLinecap="round"
-//             strokeLinejoin="round"
-//             d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-//           />
-//         </svg>
-//         <span className="text-gray-600">
-//           {multiple
-//             ? "Click to upload or drag & drop files"
-//             : "Click to upload or drag & drop a file"}
-//         </span>
-//       </label>
+  const handleFileSelect = () => {
+    fileInputRef.current?.click();
+  };
 
-//       <input
-//         id="file-upload"
-//         type="file"
-//         multiple={multiple}
-//         onChange={handleChange}
-//         className="hidden"
-//       />
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
 
-//       {files.length > 0 && (
-//         <ul className="mt-4 w-full text-sm text-gray-700">
-//           {files.map((file, index) => (
-//             <li
-//               key={index}
-//               className="flex justify-between items-center bg-gray-100 px-3 py-2 rounded mb-2"
-//             >
-//               <span>{file.name}</span>
-//               <span className="text-gray-500 text-xs">
-//                 {(file.size / 1024).toFixed(1)} KB
-//               </span>
-//             </li>
-//           ))}
-//         </ul>
-//       )}
-//     </div>
-//   );
-// }
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  };
 
-
-import { useState } from "react";
-
-export default function FileUpload() {
-  const [files, setFiles] = useState<File[]>([]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-    setFiles(Array.from(e.target.files));
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    handleFileUpload(e.dataTransfer.files);
   };
 
   const removeFile = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
+    setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  };
+
+  const getFileIcon = (file: File) => {
+    if (file.type.startsWith("image/")) {
+      return <Image className="w-5 h-5 text-blue-500" />;
+    } else if (file.type.includes("pdf")) {
+      return <FileText className="w-5 h-5 text-red-500" />;
+    } else {
+      return <File className="w-5 h-5 text-gray-500" />;
+    }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-6 w-full max-w-xl mx-auto">
-      {/* Upload Area */}
-      <label
-        htmlFor="file-upload"
-        className="cursor-pointer flex flex-col items-center gap-2"
-      >
-        <svg
-          className="w-12 h-12 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-          />
-        </svg>
-        <span className="text-gray-600">
-          Click to upload or drag & drop files
-        </span>
-      </label>
-
-      <input
-        id="file-upload"
-        type="file"
-        multiple
-        onChange={handleChange}
-        className="hidden"
-      />
-
-      {/* File Preview Row */}
-      {files.length > 0 && (
-        <div className="mt-4 flex flex-wrap gap-3 w-full">
-          {files.map((file, index) => (
-            <div
-              key={index}
-              className="relative flex flex-col items-center border rounded-lg p-3 bg-gray-50 shadow-sm w-28"
-            >
-              {/* Remove Button */}
-              <button
-                type="button"
-                onClick={() => removeFile(index)}
-                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+    <div>
+      <Card className="mb-8 bg-card_grey border-0">
+        <CardContent className="p-6">
+          <div
+            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+              isDragOver
+                ? "border-legal-gold bg-legal-gold/5"
+                : "border-border hover:border-legal-gold/50"
+            }`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          >
+            <div className="flex flex-col items-center space-y-4">
+              <div className="w-16 h-16 bg-legal-gold/10 rounded-full flex items-center justify-center">
+                <Upload className="w-8 h-8 text-legal-gold" />
+              </div>
+              <div className="text-white">
+                Click to upload or drag & drop files
+              </div>
+              <Button
+                variant="outline"
+                className="border-legal-gold text-legal-gold hover:bg-legal-gold/10"
+                onClick={handleFileSelect}
               >
-                ✕
-              </button>
-
-              {/* Preview */}
-              {file.type.startsWith("image/") ? (
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt={file.name}
-                  className="w-20 h-20 object-cover rounded-md"
-                />
-              ) : (
-                <div className="w-20 h-20 flex items-center justify-center bg-gray-200 rounded-md text-gray-500 text-sm">
-                  File
-                </div>
-              )}
-              <span className="mt-2 text-xs text-center truncate w-full">
-                {file.name}
-              </span>
+                Browse Files
+              </Button>
             </div>
-          ))}
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              className="hidden"
+              onChange={(e) => handleFileUpload(e.target.files)}
+              accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif"
+            />
+          </div>
+          {uploadedFiles?.length > 0 && (
+            <div className="mt-6">
+              <h4 className="text-sm font-medium text-foreground mb-3">
+                Uploaded Files ({uploadedFiles.length})
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3">
+                {uploadedFiles.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center space-x-3 p-3 bg-light-white border border-border rounded-lg hover:bg-card/10 transition-colors"
+                  >
+                    <div className="flex-shrink-0">{getFileIcon(file)}</div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {file.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatFileSize(file.size)}
+                      </p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeFile(index)}
+                      className="text-destructive hover:text-destructive hover:bg-destructive/10 p-1 h-auto flex-shrink-0"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+        <div className="flex item-center justify-center">
+          <Button
+            variant="outline"
+            className="border-legal-gold text-legal-gold bg-card/50"
+            onClick={uploadFiles}
+          >
+            Upload Files
+          </Button>
         </div>
-      )}
+      </Card>
     </div>
   );
-}
+};
+
+export default DocumentUploader;
