@@ -35,7 +35,7 @@ export const WitnessAnalyserDashboard = () => {
 
   return (
     <div className="min-h-screen container bg-background text-foreground pt-20">
-      <header className="bg-sidebar-bg border-b border-border">
+      <header className="bg-sidebar-bg border-b border-border mb-5">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
           <div className="flex flex-col space-y-2">
             <div className="text-sm text-muted-foreground">
@@ -48,7 +48,7 @@ export const WitnessAnalyserDashboard = () => {
           </div>
         </div>
 
-        <div className="mt-4 flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+        <div className="mt-4 flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 mb-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-center lg:space-x-8 gap-4 lg:gap-0 text-sm">
             <div className="flex items-center space-x-2">
               <span className="text-muted-foreground">Case:</span>

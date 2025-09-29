@@ -5,8 +5,14 @@ import { useState } from "react";
 import DocumentUploadModal from "@/components/DocumentUploadModal";
 import { useUploadFiles } from "@/api/project";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "@/components/ui/card";
 
-export const QuickActions = ({ projectId,uploadDocumentFile }: any) => {
+export const QuickActions = ({ projectId, uploadDocumentFile }: any) => {
   const navigate = useNavigate();
   const [uploadDocumentStatus, setUploadDocumentStatus] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -17,12 +23,12 @@ export const QuickActions = ({ projectId,uploadDocumentFile }: any) => {
       { files: uploadedFiles, projectId: projectId },
       {
         onSuccess: () => {
-           toast({
+          toast({
             description: "The project file has been uploaded",
             variant: "default",
           });
           navigate(`/projects/project-view/${projectId}`);
-          setUploadDocumentStatus(false)
+          setUploadDocumentStatus(false);
         },
         onError: () => {
           toast({
@@ -40,22 +46,28 @@ export const QuickActions = ({ projectId,uploadDocumentFile }: any) => {
       <div className="space-y-2">
         <Button
           variant="outline"
-          className="w-full justify-start h-8 text-xs"
+          className="w-full justify-start h-8 text-xs mb-2"
           onClick={() => setUploadDocumentStatus(true)}
         >
           <Upload className="h-3 w-3 mr-2" />
           Upload Document
         </Button>
-        <Button
-          variant="outline"
-          className="w-full justify-start h-8 text-xs"
-          onClick={() =>
-            navigate(`/projects/project-analyses-view/${projectId}`)
-          }
-        >
-          <FileText className="h-3 w-3 mr-2" />
-          Analyse Selected
-        </Button>
+        <Card className="bg-card_grey p-1">
+          <CardHeader className="text-md text-white mb-0 pb-1">Witness Evidence Analyser</CardHeader>
+          <CardContent>
+            <p className="text-sm py-4">Comprehensive credibility assessment and cross-examination preparation</p>
+            <Button
+              variant="outline"
+              className="w-full justify-start h-8 text-xs mt-3"
+              onClick={() =>
+                navigate(`/projects/project-analyses-view/${projectId}`)
+              }
+            >
+              <FileText className="h-3 w-3 mr-2" />
+              Analyse Selected
+            </Button>
+          </CardContent>
+        </Card>
         <DocumentUploadModal
           open={uploadDocumentStatus}
           onClose={() => setUploadDocumentStatus(false)}
