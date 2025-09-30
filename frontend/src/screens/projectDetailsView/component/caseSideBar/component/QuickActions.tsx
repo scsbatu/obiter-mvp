@@ -12,10 +12,9 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 
-export const QuickActions = ({ projectId, uploadDocumentFile }: any) => {
+export const QuickActions = ({ projectId, uploadDocumentFile,uploadedFiles,setUploadedFiles }: any) => {
   const navigate = useNavigate();
   const [uploadDocumentStatus, setUploadDocumentStatus] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
   const { toast } = useToast();
 
   const uploadFiles = () => {

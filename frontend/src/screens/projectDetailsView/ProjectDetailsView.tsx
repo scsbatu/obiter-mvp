@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LegalSidebar } from "./component/LegalSidebar";
 import { DocumentGrid } from "./component/DocumentGrid";
 import { CaseSidebar } from "./component/caseSideBar/CaseSidebar";
@@ -15,7 +15,9 @@ export const ProjectDetailsView = () => {
   const navigate = useNavigate();
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(false);
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
-  const { data, isFetching, isLoading } = useGetProjectById(id);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+
+  const { data, isFetching, isLoading, refetch } = useGetProjectById(id);
   const documentSummery = data?.documentsSummary || {};
   const witnesses = data?.witnesses || [];
   const totalDocument = documentSummery?.total || 0;
@@ -23,6 +25,21 @@ export const ProjectDetailsView = () => {
 
   const { mutate: uploadDocumentFile, isPending: uploadPending } =
     useUploadFiles();
+
+  const uploadFileDocument = (details) => {
+    uploadDocumentFile(
+      { files:details.files, projectId:details.projectId },
+      {
+        onSuccess(data, variables, context) {
+          refetch();
+        },
+      }
+    );
+  };
+
+  useEffect(() => {
+    setUploadedFiles(data?.files || []);
+  }, [data, uploadPending]);
 
   if (isLoading || isFetching || uploadPending) {
     return <Loading />;
@@ -145,13 +162,24 @@ export const ProjectDetailsView = () => {
               </div>
               <CaseSidebar
                 projectId={id}
-                uploadDocumentFile={uploadDocumentFile}
+                uploadDocumentFile={(details) =>
+                  uploadFileDocument(details)
+                }
+                uploadedFiles={uploadedFiles}
+                setUploadedFiles={setUploadedFiles}
               />
             </div>
           </div>
         )}
         <div className="hidden lg:block">
-          <CaseSidebar projectId={id} uploadDocumentFile={uploadDocumentFile} />
+          <CaseSidebar
+            projectId={id}
+            uploadDocumentFile={(details) =>
+              uploadFileDocument(details)
+            }
+            uploadedFiles={uploadedFiles}
+            setUploadedFiles={setUploadedFiles}
+          />
         </div>
       </div>
     </div>

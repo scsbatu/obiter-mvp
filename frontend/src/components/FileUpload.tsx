@@ -47,22 +47,8 @@ const DocumentUploader = ({ uploadedFiles, setUploadedFiles, uploadFiles }: any)
     setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-  };
-
   const getFileIcon = (file: File) => {
-    if (file.type.startsWith("image/")) {
-      return <Image className="w-5 h-5 text-blue-500" />;
-    } else if (file.type.includes("pdf")) {
-      return <FileText className="w-5 h-5 text-red-500" />;
-    } else {
-      return <File className="w-5 h-5 text-gray-500" />;
-    }
+      return <File className="w-5 h-5 text-gray-500" />
   };
 
   return (
@@ -101,7 +87,7 @@ const DocumentUploader = ({ uploadedFiles, setUploadedFiles, uploadFiles }: any)
               multiple
               className="hidden"
               onChange={(e) => handleFileUpload(e.target.files)}
-              accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif"
+              accept=".pdf"
             />
           </div>
           {uploadedFiles?.length > 0 && (
@@ -118,15 +104,18 @@ const DocumentUploader = ({ uploadedFiles, setUploadedFiles, uploadFiles }: any)
                     <div className="flex-shrink-0">{getFileIcon(file)}</div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">
-                        {file.name}
+                         {file?.name || file?.fileName}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {formatFileSize(file.size)}
+                       {new Date(
+                          file?.uploadedDate || new Date()
+                        ).toDateString()}
                       </p>
                     </div>
                     <Button
                       variant="ghost"
                       size="sm"
+                      disabled={!file?.name}
                       onClick={() => removeFile(index)}
                       className="text-destructive hover:text-destructive hover:bg-destructive/10 p-1 h-auto flex-shrink-0"
                     >

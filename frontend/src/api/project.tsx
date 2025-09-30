@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { gateAxios, gateAxiosFileUpload } from "./api";
+import { gateAxios } from "./api";
 
 const postProject = async (data: any) => {
   let res = await gateAxios.post("/1/project", data);
@@ -61,29 +61,24 @@ export const useUploadFiles = () => {
       files,
       projectId,
     }: {
-      files: File[];
+      files: any[];
       projectId: string;
     }) => {
-      const results = [];
       for (const file of files) {
-        if (!file) return;
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = async () => {
-          const base64File = (reader.result as string).split(",")[1];
-          const payload = {
-            projectId: projectId,
-            file: base64File,
-          };
-          try {
-            const res = await gateAxiosFileUpload.post(
-              "1/project/upload",
-              payload
-            );
-          } catch (err: any) {}
+        const payload = {
+          projectId: projectId,
         };
+        if (!file || !file.name) continue;
+        const res = await gateAxios.post("1/project/upload", payload);
+        await fetch(res.data.uploadUrl, {
+          method: "PUT",
+          body: file,
+          headers: {
+            "Content-Type": file.type,
+          },
+        });
       }
-      return results;
+      return;
     },
   });
 };

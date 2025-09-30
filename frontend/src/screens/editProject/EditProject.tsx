@@ -24,7 +24,7 @@ const EditProject = () => {
   const { data, isFetching, isLoading } = useGetProjectById(id);
   const [witnesses, setWitnesses] = useState<string[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [date, setDate] = useState<any | null>(new Date());
+  const [date, setDate] = useState<any | null>(new Date());  
 
   const { mutate: uploadDocumentFile, isPending: uploadPending } =
     useUploadFiles();
@@ -39,6 +39,7 @@ const EditProject = () => {
   };
 
   const values = useMemo(() => {
+    setUploadedFiles(data?.files || [])
     setWitnesses(data?.witnesses || []);
     return data;
   }, [data]);

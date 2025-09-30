@@ -12,7 +12,7 @@ export interface Witness {
   type: "lay" | "expert";
 }
 
-const DocumentUploader = ({uploadedFiles,setUploadedFiles}:any) => {
+const DocumentUploader = ({ uploadedFiles, setUploadedFiles }: any) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
 
@@ -47,23 +47,9 @@ const DocumentUploader = ({uploadedFiles,setUploadedFiles}:any) => {
     setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-  };
-
   const getFileIcon = (file: File) => {
-    if (file.type.startsWith("image/")) {
-      return <Image className="w-5 h-5 text-blue-500" />;
-    } else if (file.type.includes("pdf")) {
-      return <FileText className="w-5 h-5 text-red-500" />;
-    } else {
       return <File className="w-5 h-5 text-gray-500" />;
     }
-  };
 
   return (
     <div>
@@ -104,7 +90,7 @@ const DocumentUploader = ({uploadedFiles,setUploadedFiles}:any) => {
               multiple
               className="hidden"
               onChange={(e) => handleFileUpload(e.target.files)}
-              accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif"
+              accept=".pdf"
             />
           </div>
           {uploadedFiles.length > 0 && (
@@ -116,20 +102,23 @@ const DocumentUploader = ({uploadedFiles,setUploadedFiles}:any) => {
                 {uploadedFiles.map((file, index) => (
                   <div
                     key={index}
-                    className="flex items-center space-x-3 p-3 bg-light-white border border-border rounded-lg hover:bg-card/80 transition-colors"
+                    className="flex items-center space-x-3 p-3 bg-light-white border border-border rounded-lg hover:bg-light-gold transition-colors"
                   >
                     <div className="flex-shrink-0">{getFileIcon(file)}</div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">
-                        {file.name}
+                        {file?.name || file?.fileName}
                       </p>
-                      <p className="text-xs text-muted-foreground">
-                        {formatFileSize(file.size)}
+                      <p className="text-xs text-foreground truncate">
+                        {new Date(
+                          file?.uploadedDate || new Date()
+                        ).toDateString()}
                       </p>
                     </div>
                     <Button
                       variant="ghost"
                       size="sm"
+                      disabled={!file?.name}
                       onClick={() => removeFile(index)}
                       className="text-destructive hover:text-destructive hover:bg-destructive/10 p-1 h-auto flex-shrink-0"
                     >
