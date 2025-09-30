@@ -43,18 +43,7 @@ const SidebarItem = ({
           <span>{label}</span>
         </div>
         <div className="flex items-center space-x-2">
-          {count && (
-            <span
-              className={cn(
-                "text-xs px-2 py-0.5 rounded-full",
-                isActive
-                  ? "bg-background text-legal-gold"
-                  : "bg-muted text-muted-foreground"
-              )}
-            >
-              {count}
-            </span>
-          )}
+          {count}
           {hasSubmenu &&
             (isExpanded ? (
               <ChevronDown className="h-3 w-3" />
@@ -70,7 +59,7 @@ const SidebarItem = ({
   );
 };
 
-export const LegalSidebar = ({ documentData, witnesses }:any) => {
+export const LegalSidebar = ({ documentSummery, witnesses }: any) => {
   return (
     <div className="w-64 bg-sidebar-bg border-r border-border h-full p-4">
       <div className="mb-6">
@@ -83,27 +72,27 @@ export const LegalSidebar = ({ documentData, witnesses }:any) => {
         <SidebarItem
           icon={Folder}
           label="All Documents"
-          count={documentData?.total || 0}
+          count={documentSummery?.total || 0}
         />
         <SidebarItem
           icon={Folder}
           label="Pleadings"
-          count={documentData?.pending || 0}
+          count={documentSummery?.pending || 0}
         />
         <SidebarItem
           icon={Folder}
           label="Expert Reports"
-          count={documentData?.expertReports || 0}
+          count={documentSummery?.expertReports || 0}
         />
         <SidebarItem
-          icon={Eye}
+          icon={Folder}
           label="Case Overview"
-          count={documentData?.caseOverview || 0}
+          count={documentSummery?.caseOverview || 0}
         />
         <SidebarItem
-          icon={Handshake}
+          icon={Folder}
           label="Settlements"
-          count={documentData?.settlement || 0}
+          count={documentSummery?.settlement || 0}
         />
       </div>
       <div className="mt-8 pt-6 border-t border-border">

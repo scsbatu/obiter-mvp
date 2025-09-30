@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { sampleDocuments } from "@/config/constants";
 
-export const DocumentGrid = ({documentSummery}) => {
+export const DocumentGrid = ({ documentSummery, currentDocument }) => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -38,54 +38,50 @@ export const DocumentGrid = ({documentSummery}) => {
           </Button>
         </div> */}
       </div>
+      {currentDocument && currentDocument.length > 0 ? (
+        <>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
+            <div className="relative flex-1 sm:max-w-md" />
+            <div className="flex items-center space-x-1 self-end sm:self-auto">
+              <Button
+                variant={viewMode === "grid" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("grid")}
+              >
+                <Grid3X3 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
-        <div className="relative flex-1 sm:max-w-md">
-          {/* <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search documents..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          /> */}
-        </div>
-
-        <div className="flex items-center space-x-1 self-end sm:self-auto">
-          <Button
-            variant={viewMode === "grid" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setViewMode("grid")}
+          <div
+            className={`grid gap-3 md:gap-4 ${
+              viewMode === "grid"
+                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3"
+                : "grid-cols-1"
+            }`}
           >
-            <Grid3X3 className="h-4 w-4" />
-          </Button>
-          <Button
-            variant={viewMode === "list" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setViewMode("list")}
-          >
-            <List className="h-4 w-4" />
-          </Button>
+            {currentDocument.map((doc, index) => (
+              <DocumentCard
+                key={index}
+                title={doc.fileName}
+                uploadDate={doc?.uploadedDate}
+                pages={doc?.noOfPages}
+              />
+            ))}
+          </div>
+        </>
+      ) : (
+        <div className="text-center text-muted-foreground text-lg py-4">
+          Documents are unavailable
         </div>
-      </div>
-
-      <div
-        className={`grid gap-3 md:gap-4 ${
-          viewMode === "grid"
-            ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3"
-            : "grid-cols-1"
-        }`}
-      >
-        {filteredDocuments.map((doc, index) => (
-          <DocumentCard
-            key={index}
-            title={doc.title}
-            fileSize={doc.fileSize}
-            uploadDate={doc.uploadDate}
-            pages={doc.pages}
-            tags={doc.tags}
-          />
-        ))}
-      </div>
+      )}
     </div>
   );
 };

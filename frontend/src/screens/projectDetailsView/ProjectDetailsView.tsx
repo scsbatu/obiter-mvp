@@ -19,6 +19,7 @@ export const ProjectDetailsView = () => {
 
   const { data, isFetching, isLoading, refetch } = useGetProjectById(id);
   const documentSummery = data?.documentsSummary || {};
+  const currentDocument = data?.files || []
   const witnesses = data?.witnesses || [];
   const totalDocument = documentSummery?.total || 0;
   const projectDate = formatDate(data?.incidentDate);
@@ -141,7 +142,7 @@ export const ProjectDetailsView = () => {
           />
         </div>
         <div className="flex-1">
-          <DocumentGrid documentSummery={documentSummery} />
+          <DocumentGrid documentSummery={documentSummery} currentDocument={currentDocument} />
         </div>
         {rightSidebarOpen && (
           <div className="fixed inset-0 z-50 md:hidden">
