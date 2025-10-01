@@ -4,18 +4,22 @@ import { Search, Filter, MoreVertical, Grid3X3, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { sampleDocuments } from "@/config/constants";
+import DocumentDetailsViewModal from "@/components/DocumentDetailsViewModal";
 
 export const DocumentGrid = ({ documentSummery, currentDocument }) => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [enableSummery,setEnableSummery] = useState(false)
+  const [documentDetails,setDocumentDetails] = useState<any>(null)
 
-  const filteredDocuments = sampleDocuments.filter(
-    (doc) =>
-      doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doc.tags.some((tag) =>
-        tag.label.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-  );
+  const viewDocumentDetails = (details:any) =>{    
+    setEnableSummery(true)
+    setDocumentDetails(details)
+  }  
+
+  const closeDocumentView = () =>{
+     setEnableSummery(false)
+    setDocumentDetails(null)
+  }
 
   return (
     <div className="flex-1 p-4">
@@ -28,15 +32,6 @@ export const DocumentGrid = ({ documentSummery, currentDocument }) => {
             {documentSummery?.total} documents • Ready for analysis
           </p>
         </div>
-        {/* <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm" className="text-xs">
-            <Filter className="h-4 w-4 mr-1 sm:mr-2" />
-            <span className="hidden sm:inline">Filter</span>
-          </Button>
-          <Button variant="outline" size="sm">
-            <MoreVertical className="h-4 w-4" />
-          </Button>
-        </div> */}
       </div>
       {currentDocument && currentDocument.length > 0 ? (
         <>
@@ -70,9 +65,8 @@ export const DocumentGrid = ({ documentSummery, currentDocument }) => {
             {currentDocument.map((doc, index) => (
               <DocumentCard
                 key={index}
-                title={doc.fileName}
-                uploadDate={doc?.uploadedDate}
-                pages={doc?.noOfPages}
+                documentDetails={doc}
+                enableSummery={viewDocumentDetails}
               />
             ))}
           </div>
@@ -82,6 +76,7 @@ export const DocumentGrid = ({ documentSummery, currentDocument }) => {
           Documents are unavailable
         </div>
       )}
+      <DocumentDetailsViewModal open={enableSummery} documentDetails={documentDetails} onClose={closeDocumentView}/>
     </div>
   );
 };

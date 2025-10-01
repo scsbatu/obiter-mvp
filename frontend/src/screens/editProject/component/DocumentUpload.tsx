@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload, Plus, X, File, FileText, Image } from "lucide-react";
+import { formatFileSize, formatFileSizeByte } from "@/utils/file";
 
 export interface Witness {
   id: string;
@@ -48,8 +49,14 @@ const DocumentUploader = ({ uploadedFiles, setUploadedFiles }: any) => {
   };
 
   const getFileIcon = (file: File) => {
-      return <File className="w-5 h-5 text-gray-500" />;
-    }
+    return <File className="w-5 h-5 text-gray-500" />;
+  };
+
+  const getFileSize = (file: any) => {
+    return file?.title
+      ? formatFileSize(file?.fileSize || 0)
+      : formatFileSizeByte(file?.size || 0);
+  };
 
   return (
     <div>
@@ -77,7 +84,7 @@ const DocumentUploader = ({ uploadedFiles, setUploadedFiles }: any) => {
               </div>
               <Button
                 variant="outline"
-                className="border-legal-gold text-legal-gold hover:bg-legal-gold/10"
+                className="border-legal-gold text-legal-gold"
                 onClick={handleFileSelect}
               >
                 Browse Files
@@ -106,13 +113,16 @@ const DocumentUploader = ({ uploadedFiles, setUploadedFiles }: any) => {
                   >
                     <div className="flex-shrink-0">{getFileIcon(file)}</div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {file?.name || file?.fileName}
+                      <p className="text-sm font-medium text-primary truncate mb-1">
+                        {file?.title || file?.name || file?.fileName}
                       </p>
-                      <p className="text-xs text-foreground truncate">
+                      <p className="text-xs text-white truncate mb-1">
                         {new Date(
                           file?.uploadedDate || new Date()
                         ).toDateString()}
+                      </p>
+                      <p className="text-xs text-muted-foreground mb-1">
+                        {getFileSize(file)}
                       </p>
                     </div>
                     <Button

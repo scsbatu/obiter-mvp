@@ -52,9 +52,9 @@ export const QuickActions = ({ projectId, uploadDocumentFile,uploadedFiles,setUp
           Upload Document
         </Button>
         <Card className="bg-card_grey p-1">
-          <CardHeader className="text-md text-white mb-0 pb-1">Witness Evidence Analyser</CardHeader>
+          <CardHeader className="text-md text-primary mb-0 pb-1">Witness Evidence Analyser</CardHeader>
           <CardContent>
-            <p className="text-sm py-4">Comprehensive credibility assessment and cross-examination preparation</p>
+            <p className="text-sm py-4 text-white">Comprehensive credibility assessment and cross-examination preparation</p>
             <Button
               variant="outline"
               className="w-full justify-start h-8 text-xs mt-3"
