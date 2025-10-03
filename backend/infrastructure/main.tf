@@ -34,6 +34,30 @@ resource "aws_s3_bucket_versioning" "lambda_deployments" {
   }
 }
 
+# S3 bucket for file uploads
+resource "aws_s3_bucket" "uploads" {
+  bucket = "${var.project_name}-uploads-${random_id.bucket_suffix.hex}"
+}
+
+resource "aws_s3_bucket_versioning" "uploads" {
+  bucket = aws_s3_bucket.uploads.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_cors_configuration" "uploads" {
+  bucket = aws_s3_bucket.uploads.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["PUT", "POST", "GET"]
+    allowed_origins = ["*"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }
+}
+
 # DynamoDB table for projects
 resource "aws_dynamodb_table" "projects" {
   name           = "${var.project_name}-projects"
@@ -111,6 +135,30 @@ resource "aws_iam_role_policy" "lambda_policy" {
           aws_dynamodb_table.projects.arn,
           "${aws_dynamodb_table.projects.arn}/index/*"
         ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ]
+        Resource = "${aws_s3_bucket.uploads.arn}/*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:ListBucket"
+        ]
+        Resource = aws_s3_bucket.uploads.arn
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream"
+        ]
+        Resource = "*"
       }
     ]
   })
@@ -141,6 +189,7 @@ resource "aws_lambda_function" "api" {
   environment {
     variables = {
       DYNAMODB_TABLE_NAME = aws_dynamodb_table.projects.name
+      S3_BUCKET_NAME = aws_s3_bucket.uploads.bucket
       ENVIRONMENT = var.environment
     }
   }
@@ -381,10 +430,77 @@ data "archive_file" "lambda_zip" {
   output_path = "${path.module}/lambda-source.zip"
 }
 
+# Package notification lambda source
+data "archive_file" "notification_zip" {
+  type        = "zip"
+  source_file = "${path.module}/../basic-analisys.py"
+  output_path = "${path.module}/notification-source.zip"
+}
+
 # Upload Lambda source code to S3
 resource "aws_s3_object" "lambda_package" {
   bucket = aws_s3_bucket.lambda_deployments.id
   key    = "lambda-source.zip"
   source = data.archive_file.lambda_zip.output_path
   etag   = data.archive_file.lambda_zip.output_md5
+}
+
+# Upload notification Lambda source code to S3
+resource "aws_s3_object" "notification_package" {
+  bucket = aws_s3_bucket.lambda_deployments.id
+  key    = "notification-source.zip"
+  source = data.archive_file.notification_zip.output_path
+  etag   = data.archive_file.notification_zip.output_md5
+}
+
+# Notification Lambda function (triggered by S3 object created)
+resource "aws_lambda_function" "notification" {
+  function_name = "${var.project_name}-notification"
+  role          = aws_iam_role.lambda_role.arn
+  handler       = "basic-analisys.handler"
+  runtime       = "python3.12"
+  timeout       = 30
+  memory_size   = 256
+
+  s3_bucket = aws_s3_bucket.lambda_deployments.id
+  s3_key    = aws_s3_object.notification_package.key
+
+  source_code_hash = data.archive_file.notification_zip.output_base64sha256
+
+  layers = [aws_lambda_layer_version.python_dependencies.arn]
+
+  environment {
+    variables = {
+      DYNAMODB_TABLE_NAME = aws_dynamodb_table.projects.name
+    }
+  }
+
+  depends_on = [
+    aws_iam_role_policy.lambda_policy,
+    aws_cloudwatch_log_group.lambda_logs,
+    aws_lambda_layer_version.python_dependencies
+  ]
+}
+
+# Allow S3 to invoke notification lambda
+resource "aws_lambda_permission" "s3_invoke_notification" {
+  statement_id  = "AllowS3InvokeNotification"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.notification.function_name
+  principal     = "s3.amazonaws.com"
+  source_arn    = aws_s3_bucket.uploads.arn
+}
+
+# Configure S3 bucket notifications to trigger the notification lambda on PDF uploads
+resource "aws_s3_bucket_notification" "uploads_notifications" {
+  bucket = aws_s3_bucket.uploads.id
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.notification.arn
+    events              = ["s3:ObjectCreated:Put", "s3:ObjectCreated:CompleteMultipartUpload"]
+    filter_prefix       = "projects/"
+    filter_suffix       = ".pdf"
+  }
+
+  depends_on = [aws_lambda_permission.s3_invoke_notification]
 }

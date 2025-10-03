@@ -18,6 +18,16 @@ output "s3_bucket_name" {
   value       = aws_s3_bucket.lambda_deployments.bucket
 }
 
+output "s3_uploads_bucket_name" {
+  description = "Name of the S3 bucket for file uploads"
+  value       = aws_s3_bucket.uploads.bucket
+}
+
+output "s3_uploads_bucket_arn" {
+  description = "ARN of the S3 bucket for file uploads"
+  value       = aws_s3_bucket.uploads.arn
+}
+
 output "api_gateway_stage_name" {
   description = "Name of the API Gateway stage"
   value       = aws_api_gateway_stage.api.stage_name

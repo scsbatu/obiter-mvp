@@ -130,8 +130,7 @@ paths:
                     uploadedDate: "2025-09-03T12:00:00Z"
                     noOfPages: 10
                     summary: "Analysis by expert witness"
-
-  /api/1/project/edit:
+                    
     put:
       tags:
         - Project
@@ -201,7 +200,109 @@ paths:
                   - fileName: "Expert_Report_DrSmith.pdf"
                     uploadedDate: "2025-09-03T12:00:00Z"
                     noOfPages: 10
-                    summary: "Analysis by expert witness"
+                    summary: "Analysis by expert witness"                
+  /api/1/projects:
+    get:
+      tags:
+        - Project
+      summary: Get project details
+      description: Retrieve a project by ID along with document counts and detailed files.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: header
+          required: true
+          schema:
+            type: string
+          description: ID of the user making the request
+        - name: correlationId
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Correlation ID for request tracking (optional)
+      responses:
+        '200':
+          description: Project details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectsResponse'
+  /api/1/project/upload:
+    post:
+      tags:
+        - Project
+      summary: Get presigned URL for file upload
+      description: Generates a presigned URL for uploading files to S3 for a specific project.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: header
+          required: true
+          schema:
+            type: string
+          description: ID of the user making the request
+          example: "user-12345"
+        - name: correlationId
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Correlation ID for request tracking (optional)
+          example: "abc123-xyz789"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadRequest'
+            example:
+              projectId: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Presigned URL generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+              example:
+                uploadUrl: "https://s3.amazonaws.com/bucket/projects/550e8400-e29b-41d4-a716-446655440000/Witness_Statement_JohnDoe.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=..."
+                fileKey: "projects/550e8400-e29b-41d4-a716-446655440000/Witness_Statement_JohnDoe.pdf"
+                expiresIn: 3600
+        '400':
+          description: Bad request - Invalid file type or size
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Invalid file type. Only PDF, DOC, DOCX files are allowed."
+        '403':
+          description: Forbidden - Project does not belong to user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Access denied: Project does not belong to user"
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Project not found"
 
   /api/1/witness-evidence-analyser:
     post:
@@ -421,7 +522,33 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/FileDetail'
-
+                
+    ProjectsResponse:
+      type: object
+      required:
+        - projectId
+        - status
+        - createdAt
+      properties:
+        projectId:
+          type: string
+          format: uuid
+        title:
+          type: string
+          example: Thompson v Metropolitan Shopping Centers  
+        status:
+          type: string
+          example: "In Progress"
+        noOfDocuments:
+          type: number
+          example: 13 
+        noOfAnalyses:
+          type: number
+          example: 13    
+        createdAt:
+          type: string
+          format: date-time
+          
     WitnessEvidenceAnalysisStartResponse:
       type: object
       required:
@@ -458,3 +585,33 @@ components:
         completedAt:
           type: string
           format: date-time
+
+    UploadRequest:
+      type: object
+      required:
+        - projectId
+      properties:
+        projectId:
+          type: string
+          format: uuid
+          description: ID of the project to upload file to
+
+    UploadResponse:
+      type: object
+      required:
+        - uploadUrl
+        - fileKey
+        - expiresIn
+      properties:
+        uploadUrl:
+          type: string
+          description: Presigned URL for uploading the file
+          example: "https://s3.amazonaws.com/bucket/projects/550e8400-e29b-41d4-a716-446655440000/Witness_Statement_JohnDoe.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=..."
+        fileKey:
+          type: string
+          description: S3 key where the file will be stored
+          example: "projects/550e8400-e29b-41d4-a716-446655440000/Witness_Statement_JohnDoe.pdf"
+        expiresIn:
+          type: integer
+          description: URL expiration time in seconds
+          example: 3600
